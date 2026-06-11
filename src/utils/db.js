@@ -21,17 +21,41 @@ export const initDB = () => {
 };
 
 // -- PHOTOS --
-export const savePhoto = async (base64Data, caption) => {
-  const photo = { data: base64Data, caption, date: Date.now() };
+export const savePhoto = async (file, base64Data, caption) => {
+  const id = Date.now().toString();
+  let imageUrl = base64Data;
 
   // Sync to Supabase
-  if (supabase) {
-    const id = Date.now().toString();
-    const { error } = await supabase.from('photos').insert([{ id, ...photo }]);
-    if (error) console.error("Supabase error:", error);
+  if (supabase && file) {
+    // 1. Upload to Storage
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${id}.${fileExt}`;
+    
+    const { error: uploadError } = await supabase.storage
+      .from('memories')
+      .upload(fileName, file);
+
+    if (uploadError) {
+      console.error("Supabase Storage error:", uploadError);
+    } else {
+      // 2. Get Public URL
+      const { data: urlData } = supabase.storage.from('memories').getPublicUrl(fileName);
+      imageUrl = urlData.publicUrl;
+    }
+
+    // 3. Save to DB
+    const { error: dbError } = await supabase.from('photos').insert([{ 
+      id, 
+      data: imageUrl, 
+      caption, 
+      date: Date.now() 
+    }]);
+    
+    if (dbError) console.error("Supabase DB error:", dbError);
   }
 
   // Save to IndexedDB
+  const photo = { id, data: imageUrl, caption, date: Date.now() };
   const db = await initDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction('photos', 'readwrite');
@@ -169,4 +193,24 @@ export const deleteCapsule = async (id) => {
     request.onsuccess = () => resolve();
     request.onerror = () => reject(request.error);
   });
+};
+
+// -- FARM LOGS --
+export const saveFarmLog = async (dateStr, text) => {
+  if (supabase) {
+    const id = dateStr;
+    const { error } = await supabase.from('farm_logs').upsert([{ id, date: dateStr, log_text: text }]);
+    if (error) console.error("Supabase Farm Log error:", error);
+  }
+
+  // Backup to localStorage
+  localStorage.setItem('ojtFarmLog', text);
+};
+
+export const getFarmLog = async (dateStr) => {
+  if (supabase) {
+    const { data, error } = await supabase.from('farm_logs').select('log_text').eq('date', dateStr).single();
+    if (!error && data) return data.log_text;
+  }
+  return localStorage.getItem('ojtFarmLog') || '';
 };

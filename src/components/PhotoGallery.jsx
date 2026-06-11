@@ -30,7 +30,7 @@ export default function PhotoGallery({ images }) {
     reader.onloadend = async () => {
       const base64String = reader.result;
       const caption = prompt("Enter a sweet caption for this memory 💕:") || "A beautiful moment together";
-      await savePhoto(base64String, caption);
+      await savePhoto(file, base64String, caption);
       await loadDbPhotos();
     };
     reader.readAsDataURL(file);

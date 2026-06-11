@@ -14,7 +14,6 @@ import './Dashboard.css';
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('gallery');
   const [images, setImages] = useState([]);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Randomize images so it looks fresh every time!
@@ -34,46 +33,36 @@ export default function Dashboard() {
         
         <div className="header-actions">
           <LoveLetter />
-          
-          <button 
-            className="mobile-menu-btn"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-
-          <AnimatePresence>
-            <motion.div 
-              className={`tab-navigation ${isMobileMenuOpen ? 'mobile-open' : ''}`}
-            >
-              <button 
-                className={`tab-btn ${activeTab === 'gallery' ? 'active' : ''}`}
-                onClick={() => { setActiveTab('gallery'); setIsMobileMenuOpen(false); }}
-              >
-                <Image size={18} /> Our Memories
-              </button>
-              <button 
-                className={`tab-btn ${activeTab === 'vitamins' ? 'active' : ''}`}
-                onClick={() => { setActiveTab('vitamins'); setIsMobileMenuOpen(false); }}
-              >
-                <Pill size={18} /> Vitamins
-              </button>
-              <button 
-                className={`tab-btn ${activeTab === 'mood' ? 'active' : ''}`}
-                onClick={() => { setActiveTab('mood'); setIsMobileMenuOpen(false); }}
-              >
-                <HeartHandshake size={18} /> Daily Mood
-              </button>
-              <button 
-                className={`tab-btn ${activeTab === 'ojt' ? 'active' : ''}`}
-                onClick={() => { setActiveTab('ojt'); setIsMobileMenuOpen(false); }}
-              >
-                <Briefcase size={18} /> OJT Tools
-              </button>
-            </motion.div>
-          </AnimatePresence>
         </div>
       </header>
+
+      {/* Floating Segmented Control / Bottom Dock */}
+      <div className="tab-navigation">
+        <button 
+          className={`tab-btn ${activeTab === 'gallery' ? 'active' : ''}`}
+          onClick={() => setActiveTab('gallery')}
+        >
+          <Image size={20} /> <span>Memories</span>
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'vitamins' ? 'active' : ''}`}
+          onClick={() => setActiveTab('vitamins')}
+        >
+          <Pill size={20} /> <span>Vitamins</span>
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'mood' ? 'active' : ''}`}
+          onClick={() => setActiveTab('mood')}
+        >
+          <HeartHandshake size={20} /> <span>Mood</span>
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'ojt' ? 'active' : ''}`}
+          onClick={() => setActiveTab('ojt')}
+        >
+          <Briefcase size={20} /> <span>Tools</span>
+        </button>
+      </div>
 
       <main className="dashboard-content">
         <AnimatePresence mode="wait">

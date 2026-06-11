@@ -1,24 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Save, Copy, CheckCircle2 } from 'lucide-react';
+import { saveFarmLog, getFarmLog } from '../../utils/db';
 
 export default function DailyLogbook() {
   const [log, setLog] = useState('');
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
+  const debounceTimer = useRef(null);
 
   useEffect(() => {
-    const savedLog = localStorage.getItem('ojtFarmLog');
-    if (savedLog) setLog(savedLog);
+    const loadLog = async () => {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const savedLog = await getFarmLog(todayStr);
+      if (savedLog) setLog(savedLog);
+    };
+    loadLog();
   }, []);
 
   const handleSave = (e) => {
     const value = e.target.value;
     setLog(value);
+    
+    // Save to local immediately for snappy UI
     localStorage.setItem('ojtFarmLog', value);
     
+    // Show saving UI
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    
+    // Debounce the Supabase cloud sync to avoid spamming the DB
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    
+    debounceTimer.current = setTimeout(async () => {
+      const todayStr = new Date().toISOString().split('T')[0];
+      await saveFarmLog(todayStr, value);
+      setSaved(false); // Hide saving UI when sync is done
+    }, 1500);
   };
 
   const handleCopy = () => {
@@ -53,7 +70,7 @@ export default function DailyLogbook() {
           placeholder="e.g. 8:00 AM - Fed the cattle and checked the water troughs. 10:00 AM - Assisted in sorting the piglets..."
         />
         <div className="save-status">
-          {saved ? <span className="saved-text"><Save size={12}/> Auto-saved!</span> : null}
+          {saved ? <span className="saved-text"><Save size={12}/> Cloud sync...</span> : null}
         </div>
       </div>
 
@@ -65,7 +82,7 @@ export default function DailyLogbook() {
       </div>
       
       <div className="tool-tip">
-        <strong>💡 Tip:</strong> Your handsome LoveyDovey made sure this auto-saves as you type. Just click the copy icon when you need to paste it into your official OJT report!
+        <strong>💡 Tip:</strong> Your handsome LoveyDovey made sure this auto-saves directly to the cloud as you type! Just click the copy icon when you need to paste it into your official OJT report!
       </div>
     </motion.div>
   );
