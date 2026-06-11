@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, Check, Clock, CalendarPlus } from 'lucide-react';
+import { Bell, Check, Clock, CalendarPlus, CheckCircle } from 'lucide-react';
 import './VitaminReminder.css';
 
 export default function VitaminReminder() {
@@ -8,10 +8,11 @@ export default function VitaminReminder() {
   const [saved, setSaved] = useState(false);
   const [isTime, setIsTime] = useState(false);
   const [lastAlertTime, setLastAlertTime] = useState(null);
+  const [toast, setToast] = useState(null);
   const audioRef = useRef(null);
+  const nativeInputRef = useRef(null);
 
   useEffect(() => {
-    // Request notification permission
     if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
       Notification.requestPermission();
     }
@@ -26,7 +27,6 @@ export default function VitaminReminder() {
       const currentTime = `${currentHours}:${currentMinutes}`;
       const currentSeconds = now.getSeconds();
       
-      // Trigger exactly on the 0th second of the chosen minute
       if (currentTime === time && currentSeconds === 0 && lastAlertTime !== currentTime) {
         triggerAlarm();
         setLastAlertTime(currentTime);
@@ -44,11 +44,9 @@ export default function VitaminReminder() {
       audio.loop = true;
       audio.crossOrigin = "anonymous";
       
-      // Enhance voice using Web Audio API (Compression & Gain)
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const source = audioCtx.createMediaElementSource(audio);
       
-      // Compressor to make vocals clearer and louder without clipping
       const compressor = audioCtx.createDynamicsCompressor();
       compressor.threshold.value = -50;
       compressor.knee.value = 40;
@@ -56,15 +54,13 @@ export default function VitaminReminder() {
       compressor.attack.value = 0;
       compressor.release.value = 0.25;
 
-      // Gain to boost volume significantly
       const gainNode = audioCtx.createGain();
-      gainNode.gain.value = 4.0; // 4x louder!
+      gainNode.gain.value = 4.0;
 
       source.connect(compressor);
       compressor.connect(gainNode);
       gainNode.connect(audioCtx.destination);
       
-      // Handle suspended state on mobile browsers
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
@@ -72,7 +68,6 @@ export default function VitaminReminder() {
       audio.play().catch(e => console.log("Audio autoplay prevented by browser", e));
       audioRef.current = audio;
     } catch(e) {
-      // Fallback if Web Audio API fails
       console.log("Web Audio API failed, using standard audio", e);
       const fallbackAudio = new Audio('/alarm-audio.webm');
       fallbackAudio.loop = true;
@@ -81,7 +76,6 @@ export default function VitaminReminder() {
       audioRef.current = fallbackAudio;
     }
 
-    // Show system notification
     if ("Notification" in window && Notification.permission === "granted") {
       new Notification(`Alarm ${formatTime12hr(time)} Wake up`, {
         body: "Vitamin time! Tap to stop.",
@@ -90,12 +84,18 @@ export default function VitaminReminder() {
     }
   };
 
+  const showToast = (message) => {
+    setToast(message);
+    setTimeout(() => setToast(null), 3500);
+  };
+
   const handleSave = () => {
     localStorage.setItem('vitaminTime', time);
     setSaved(true);
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
+    showToast(`✅ Reminder set for ${formatTime12hr(time)} every day!`);
     setTimeout(() => setSaved(false), 3000);
   };
 
@@ -116,14 +116,21 @@ export default function VitaminReminder() {
     return `${hours12}:${m} ${suffix}`;
   };
 
+  const handleTimeDisplayClick = () => {
+    if (nativeInputRef.current) {
+      nativeInputRef.current.showPicker?.();
+      nativeInputRef.current.click();
+      nativeInputRef.current.focus();
+    }
+  };
+
   const handleSyncCalendar = () => {
     const [hours, minutes] = time.split(':');
     const now = new Date();
     now.setHours(parseInt(hours), parseInt(minutes), 0);
     
-    // Convert to UTC strings for ICS format
     const startUtc = now.toISOString().replace(/-|:|\.\d\d\d/g, "");
-    const endNow = new Date(now.getTime() + 15 * 60000); // 15 mins later
+    const endNow = new Date(now.getTime() + 15 * 60000);
     const endUtc = endNow.toISOString().replace(/-|:|\.\d\d\d/g, "");
 
     const icsContent = `BEGIN:VCALENDAR
@@ -148,7 +155,7 @@ ACTION:AUDIO
 END:VALARM
 END:VEVENT
 END:VCALENDAR`;
-
+    
     const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -157,10 +164,28 @@ END:VCALENDAR`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    showToast("📅 Calendar file downloaded! Open it to add the daily reminder to your phone.");
   };
 
   return (
     <div className="vitamin-container">
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div 
+            className="vitamin-toast"
+            initial={{ opacity: 0, y: -40, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: -40, x: '-50%' }}
+            transition={{ type: 'spring', bounce: 0.4 }}
+          >
+            <CheckCircle size={18} />
+            <span>{toast}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {isTime && (
           <motion.div 
@@ -194,7 +219,11 @@ END:VCALENDAR`;
 
       <div className="vitamin-card glass-panel">
         <div className="vitamin-header">
-          <img src="/images/cute_dino_vitamin.png" alt="Vitamin Dino" className="header-dino floating" />
+          <img 
+            src="/images/cute_dino_vitamin.png" 
+            alt="Cute dinosaur holding vitamins — a daily reminder from your handsome LoveyDovey" 
+            className="header-dino floating" 
+          />
           <div className="header-text">
             <h3>Daily Vitamin Reminder</h3>
             <p>Set a time so I can remind you everyday!</p>
@@ -202,23 +231,26 @@ END:VCALENDAR`;
         </div>
 
         <div className="time-setter">
-          <div className="time-input-wrapper">
+          <div className="time-input-wrapper" onClick={handleTimeDisplayClick} role="button" tabIndex={0} aria-label="Click to change reminder time">
             <Clock className="time-icon" size={24} />
+            <span className="time-display">{formatTime12hr(time)}</span>
+            {/* Hidden native input — always works on every device */}
             <input 
+              ref={nativeInputRef}
               type="time" 
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="time-input"
+              className="time-input-native"
+              aria-label="Select vitamin reminder time"
             />
           </div>
           
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '10px' }}>
+          <div className="vitamin-actions">
             <motion.button 
               className="save-btn"
               onClick={handleSave}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              style={{ flex: 1, minWidth: '120px' }}
             >
               {saved ? <><Check size={18} /> Saved!</> : <><Bell size={18} /> Set Time</>}
             </motion.button>
@@ -228,23 +260,16 @@ END:VCALENDAR`;
               onClick={handleSyncCalendar}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              style={{
-                flex: 1, minWidth: '160px',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                padding: '12px 20px', borderRadius: '50px',
-                border: 'none', background: 'rgba(255, 107, 107, 0.1)',
-                color: '#ff6b6b', fontWeight: '600', cursor: 'pointer'
-              }}
             >
-              <CalendarPlus size={18} /> Sync to Phone
+              <CalendarPlus size={18} /> Add to Calendar
             </motion.button>
           </div>
         </div>
         
-        <div style={{ marginTop: '20px', padding: '15px', background: 'rgba(255,255,255,0.4)', borderRadius: '15px', fontSize: '0.85rem', color: 'var(--text-dark)', lineHeight: '1.5' }}>
+        <div className="vitamin-tip">
           <strong>💡 Want a real alarm that wakes you up?</strong><br/>
           Since this is a website, it can only make sound when it is open. 
-          Click <strong>Sync to Phone</strong> to add an alarm directly to your device's calendar app so it rings loud even when you are studying or the app is completely closed!
+          Click <strong>Add to Calendar</strong> to download an .ics file — open it and your phone will add a repeating daily alarm that rings even when the app is closed!
         </div>
       </div>
     </div>
