@@ -255,11 +255,19 @@
 }
 
 /* Responsiveness */
-@media (max-width: 600px) {
+@media (min-width: 641px) and (max-width: 1024px) {
+  .vitamin-card {
+    width: 80%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 640px) {
   .vitamin-container {
     padding: 15px 10px;
   }
   .vitamin-card {
+    width: 100%;
     padding: 25px 20px;
     gap: 20px;
   }

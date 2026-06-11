@@ -80,6 +80,16 @@
   transform: scale(1.05);
 }
 
+/* Mobile Menu Button - Hidden by default */
+.mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  padding: 5px;
+}
+
 .dashboard-main {
   flex: 1;
   max-width: 1200px;
@@ -87,65 +97,76 @@
   width: 100%;
 }
 
-/* Mobile Premium UI: iOS Style Bottom Dock */
-@media (max-width: 768px) {
+/* TABLET (641px - 1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .tab-label {
+    display: none; /* Icons only + tooltip (via title attribute) */
+  }
+  .tab-btn {
+    padding: 10px;
+  }
+}
+
+/* PHONE (<=640px) */
+@media (max-width: 640px) {
   .dashboard-container {
-    padding: 80px 15px 120px 15px;
+    padding: 80px 15px 120px 15px; /* keep bottom padding for music player */
   }
 
   .dashboard-header {
     top: 0;
     left: 0;
-    transform: none;
     width: 100%;
+    max-width: 100%;
     border-radius: 0 0 24px 24px;
     padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.95);
     box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .tab-navigation {
     position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 30px);
-    max-width: 400px;
-    justify-content: space-between;
-    padding: 8px 12px;
-    border-radius: 30px;
-    background: rgba(255, 255, 255, 0.85);
+    top: 70px;
+    left: 20px;
+    right: 20px;
+    flex-direction: column;
+    padding: 15px;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 10px 40px rgba(255, 143, 171, 0.2), inset 0 0 0 1px rgba(255,255,255,0.8);
-    z-index: 1000;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    display: none; /* handled by framer-motion AnimatePresence but just in case */
+  }
+
+  .tab-navigation.mobile-menu-open {
+    display: flex;
   }
 
   .tab-btn {
-    flex-direction: column;
-    gap: 4px;
-    padding: 8px 12px;
-    font-size: 0.75rem;
-    font-weight: 700;
-  }
-
-  .tab-btn svg {
-    width: 22px;
-    height: 22px;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    color: var(--text-dark);
   }
 
   .tab-btn.active {
-    transform: translateY(-5px) scale(1.1);
-    box-shadow: 0 8px 16px rgba(255, 143, 171, 0.2);
+    background: rgba(255, 143, 171, 0.1);
+    color: var(--primary);
+    transform: none;
+    box-shadow: none;
   }
-
-  /* Hide the text on very small screens to keep it clean */
-  @media (max-width: 380px) {
-    .tab-btn span {
-      display: none;
-    }
-    .tab-btn {
-      padding: 10px;
-    }
+  
+  .tab-label {
+    display: block; /* Show text on mobile menu */
   }
 }

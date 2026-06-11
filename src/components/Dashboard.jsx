@@ -14,12 +14,25 @@ import './Dashboard.css';
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('gallery');
   const [images, setImages] = useState([]);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Randomize images so it looks fresh every time!
     const shuffled = [...imagesData].sort(() => 0.5 - Math.random());
     setImages(shuffled);
   }, []);
+
+  const TABS = [
+    { id: 'gallery', icon: Image, label: 'Memories' },
+    { id: 'vitamins', icon: Pill, label: 'Vitamins' },
+    { id: 'mood', icon: HeartHandshake, label: 'Mood' },
+    { id: 'ojt', icon: Briefcase, label: 'Tools' },
+  ];
+
+  const handleTabClick = (id) => {
+    setActiveTab(id);
+    setIsMobileMenuOpen(false); // Close menu on select
+  };
 
   return (
     <motion.div 
@@ -33,36 +46,38 @@ export default function Dashboard() {
         
         <div className="header-actions">
           <LoveLetter />
+          <button 
+            className="mobile-menu-btn" 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </header>
 
-      {/* Floating Segmented Control / Bottom Dock */}
-      <div className="tab-navigation">
-        <button 
-          className={`tab-btn ${activeTab === 'gallery' ? 'active' : ''}`}
-          onClick={() => setActiveTab('gallery')}
-        >
-          <Image size={20} /> <span>Memories</span>
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'vitamins' ? 'active' : ''}`}
-          onClick={() => setActiveTab('vitamins')}
-        >
-          <Pill size={20} /> <span>Vitamins</span>
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'mood' ? 'active' : ''}`}
-          onClick={() => setActiveTab('mood')}
-        >
-          <HeartHandshake size={20} /> <span>Mood</span>
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'ojt' ? 'active' : ''}`}
-          onClick={() => setActiveTab('ojt')}
-        >
-          <Briefcase size={20} /> <span>Tools</span>
-        </button>
-      </div>
+      {/* Desktop/Tablet Nav & Mobile Drawer Menu */}
+      <AnimatePresence>
+        {(isMobileMenuOpen || window.innerWidth > 640) && (
+          <motion.div 
+            className={`tab-navigation ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`}
+            initial={{ opacity: window.innerWidth <= 640 ? 0 : 1, y: window.innerWidth <= 640 ? -20 : 0 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: window.innerWidth <= 640 ? 0 : 1, y: window.innerWidth <= 640 ? -20 : 0 }}
+          >
+            {TABS.map(tab => (
+              <button 
+                key={tab.id}
+                className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+                onClick={() => handleTabClick(tab.id)}
+                title={tab.label}
+              >
+                <tab.icon size={20} /> 
+                <span className="tab-label">{tab.label}</span>
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main className="dashboard-content">
         <AnimatePresence mode="wait">

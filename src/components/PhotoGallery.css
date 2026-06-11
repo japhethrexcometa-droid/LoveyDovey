@@ -316,7 +316,22 @@
 }
 
 /* Gallery Responsiveness */
-@media (max-width: 600px) {
+@media (min-width: 1025px) {
+  .masonry-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .masonry-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lightbox-content {
+    max-width: 90vw;
+  }
+}
+
+@media (max-width: 640px) {
   .gallery-header {
     justify-content: center;
     padding: 0;

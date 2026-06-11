@@ -167,7 +167,19 @@
   color: var(--text-light) !important;
 }
 
-@media (max-width: 500px) {
+@media (min-width: 1025px) {
+  .time-val {
+    font-size: 42px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .time-val {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 640px) {
   .countdown-card {
     padding: 15px 15px;
   }
@@ -182,7 +194,7 @@
     padding: 8px 10px;
   }
   .time-val {
-    font-size: 1.2rem;
+    font-size: 28px;
   }
   .time-label {
     font-size: 0.65rem;
