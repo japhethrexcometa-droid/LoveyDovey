@@ -43,7 +43,7 @@ export default function PhotoGallery({ images }) {
             exit={{ opacity: 0 }}
             onClick={() => setSelectedId(null)}
           >
-            <button className="lightbox-close" onClick={() => setSelectedId(null)}>
+            <button className="lightbox-close">
               <X size={24} color="white" />
             </button>
             <motion.div 
