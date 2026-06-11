@@ -7,57 +7,133 @@
   padding: 10px 20px;
   color: var(--primary);
   font-weight: 600;
+  font-family: inherit;
+  font-size: 1rem;
+  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
 }
+
+.letter-btn:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
 .letter-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px);
-  z-index: 2000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 181, 167, 0.3);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
 }
+
 .letter-content {
-  background: #fff9fa;
-  padding: 40px;
-  border-radius: var(--radius-lg);
+  background: white;
   max-width: 500px;
   width: 100%;
+  padding: 40px;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   position: relative;
-  box-shadow: 0 25px 50px -12px rgba(255, 105, 180, 0.2);
-  background-image: repeating-linear-gradient(transparent, transparent 29px, #ffd1dc 30px);
-  background-attachment: local;
-  line-height: 30px;
+  border: 8px solid var(--secondary-light);
 }
+
 .letter-close {
   position: absolute;
-  top: 15px; right: 15px;
+  top: 15px;
+  right: 15px;
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #aaa;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
 }
-.letter-icon {
-  display: block;
-  margin: 0 auto 20px;
-}
-.letter-content h2 {
-  font-family: 'Outfit', sans-serif;
+
+.letter-close:hover {
+  background: var(--bg-color);
   color: var(--text-dark);
+}
+
+.letter-icon {
+  margin: 0 auto 20px auto;
+  display: block;
+}
+
+.letter-content h2 {
+  color: var(--secondary);
+  font-size: 2rem;
   margin-bottom: 20px;
-  font-size: 1.8rem;
+  font-family: 'Outfit', sans-serif;
+  text-align: center;
 }
-.letter-body p {
-  color: #444;
-  margin-bottom: 15px;
+
+.letter-body {
+  color: var(--text-dark);
   font-size: 1.1rem;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
+
 .letter-signature {
-  text-align: right;
-  font-weight: 600;
-  color: var(--primary);
   margin-top: 30px;
   font-size: 1.2rem;
+  color: var(--primary);
+  font-weight: 600;
+  text-align: right;
+  font-style: italic;
+}
+
+/* Responsiveness for Tablets and Phones */
+@media (max-width: 600px) {
+  .letter-content {
+    padding: 25px;
+    border-width: 4px;
+  }
+  .letter-content h2 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+  }
+  .letter-body {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  .letter-signature {
+    margin-top: 20px;
+    font-size: 1.1rem;
+  }
+  .letter-btn {
+    padding: 8px 16px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .letter-content {
+    padding: 20px 15px;
+  }
+  .letter-body {
+    font-size: 0.95rem;
+  }
+  .letter-btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
 }

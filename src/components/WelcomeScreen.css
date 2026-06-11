@@ -52,8 +52,51 @@
   box-shadow: 0 4px 15px rgba(255, 181, 167, 0.4);
   transition: background 0.3s ease;
   font-family: inherit;
+  width: auto;
 }
 
 .enter-button:hover {
   background: #ff9b8a;
+}
+
+/* Responsiveness for Tablets and Phones */
+@media (max-width: 768px) {
+  .welcome-content {
+    padding: 30px 20px;
+  }
+  .welcome-dino {
+    width: 200px;
+    height: 200px;
+  }
+  .welcome-title {
+    font-size: 2rem;
+  }
+  .welcome-subtitle {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-container {
+    padding: 10px;
+  }
+  .welcome-content {
+    padding: 20px 15px;
+  }
+  .welcome-dino {
+    width: 180px;
+    height: 180px;
+    margin-bottom: 15px;
+  }
+  .welcome-title {
+    font-size: 1.8rem;
+  }
+  .welcome-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+  .enter-button {
+    padding: 14px 24px;
+    font-size: 1.1rem;
+  }
 }

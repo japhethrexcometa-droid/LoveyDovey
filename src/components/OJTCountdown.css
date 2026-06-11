@@ -11,15 +11,19 @@
   align-items: center;
   gap: 10px;
   color: var(--primary);
+  text-align: center;
 }
 .countdown-subtitle {
   font-size: 0.85rem;
   color: var(--text-light);
   margin-bottom: 10px;
+  text-align: center;
 }
 .time-blocks {
   display: flex;
   gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .time-block {
   display: flex;
@@ -27,7 +31,7 @@
   align-items: center;
   background: white;
   padding: 10px 15px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   min-width: 60px;
 }
@@ -41,4 +45,26 @@
   color: var(--primary);
   text-transform: uppercase;
   font-weight: 600;
+}
+
+@media (max-width: 500px) {
+  .countdown-card {
+    padding: 15px 15px;
+  }
+  .countdown-header h3 {
+    font-size: 1.2rem;
+  }
+  .time-blocks {
+    gap: 8px;
+  }
+  .time-block {
+    min-width: 55px;
+    padding: 8px 10px;
+  }
+  .time-val {
+    font-size: 1.2rem;
+  }
+  .time-label {
+    font-size: 0.65rem;
+  }
 }
