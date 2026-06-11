@@ -1,32 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, User, Heart, Eye, EyeOff } from 'lucide-react';
+import { Heart, Delete } from 'lucide-react';
 import './LoginScreen.css';
 
-export default function LoginScreen({ onLogin }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [shake, setShake] = useState(false);
+const CORRECT_PIN = '03312025'; // User's anniversary/special date
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (username === 'loveydovey' && password === 'loveydovey') {
-      localStorage.setItem('loveydovey-auth', 'true');
-      onLogin();
-    } else {
-      setError('Wrong credentials, my love! Try again 💕');
-      setShake(true);
-      setTimeout(() => setShake(false), 600);
+export default function LoginScreen({ onLogin }) {
+  const [pin, setPin] = useState('');
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (pin.length === 8) {
+      if (pin === CORRECT_PIN) {
+        localStorage.setItem('loveydovey-auth', 'true');
+        setTimeout(() => onLogin(), 300);
+      } else {
+        setError(true);
+        setTimeout(() => {
+          setPin('');
+          setError(false);
+        }, 600);
+      }
     }
+  }, [pin, onLogin]);
+
+  const handlePadClick = (num) => {
+    if (pin.length < 8) {
+      setPin(prev => prev + num);
+      setError(false);
+    }
+  };
+
+  const handleDelete = () => {
+    setPin(prev => prev.slice(0, -1));
+    setError(false);
   };
 
   return (
     <div className="login-screen">
       <div className="login-bg-hearts">
-        {[...Array(12)].map((_, i) => (
+        {[...Array(15)].map((_, i) => (
           <span key={i} className="bg-heart" style={{
             left: `${Math.random() * 100}%`,
             animationDelay: `${Math.random() * 5}s`,
@@ -37,7 +50,7 @@ export default function LoginScreen({ onLogin }) {
       </div>
 
       <motion.div 
-        className="login-card glass-panel"
+        className="pin-container glass-panel"
         initial={{ opacity: 0, y: 40, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -51,62 +64,34 @@ export default function LoginScreen({ onLogin }) {
             <Heart size={40} fill="var(--secondary)" color="var(--secondary)" />
           </motion.div>
           <h1 className="login-title">LoveyDovey</h1>
-          <p className="login-subtitle">This is our secret place 🦖💕</p>
+          <p className="login-subtitle">Enter our secret passcode 💕</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="input-group">
-            <User size={20} className="input-icon" />
-            <input 
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => { setUsername(e.target.value); setError(''); }}
-              autoComplete="username"
-              autoCapitalize="off"
-            />
-          </div>
+        <motion.div 
+          className={`pin-dots ${error ? 'shake' : ''}`}
+          animate={error ? { x: [-10, 10, -10, 10, 0] } : {}}
+          transition={{ duration: 0.4 }}
+          style={{ gap: '8px' }} // Tighter gap for 8 dots
+        >
+          {[0, 1, 2, 3, 4, 5, 6, 7].map(i => (
+            <div key={i} className={`pin-dot ${pin.length > i ? 'filled' : ''}`} style={{ width: '12px', height: '12px' }} />
+          ))}
+        </motion.div>
 
-          <div className="input-group">
-            <Lock size={20} className="input-icon" />
-            <input 
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => { setPassword(e.target.value); setError(''); }}
-              autoComplete="current-password"
-            />
-            <button 
-              type="button" 
-              className="eye-btn" 
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+        <div className="numpad">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+            <button key={num} className="num-btn" onClick={() => handlePadClick(num.toString())}>
+              {num}
             </button>
-          </div>
-
-          <AnimatePresence>
-            {error && (
-              <motion.p 
-                className="login-error"
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-              >
-                {error}
-              </motion.p>
-            )}
-          </AnimatePresence>
-
-          <motion.button 
-            type="submit" 
-            className={`login-btn ${shake ? 'shake' : ''}`}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            Enter Our World 💗
-          </motion.button>
-        </form>
+          ))}
+          <div className="num-btn empty"></div>
+          <button className="num-btn" onClick={() => handlePadClick('0')}>0</button>
+          <button className="num-btn action" onClick={handleDelete}>
+            <Delete size={24} />
+          </button>
+        </div>
+        
+        <div className="pin-hint">Hint: Our special date 💕 (03312025)</div>
       </motion.div>
     </div>
   );

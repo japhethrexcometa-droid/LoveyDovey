@@ -11,6 +11,28 @@ export default function PhotoGallery({ images }) {
 
   useEffect(() => {
     loadDbPhotos();
+
+    // Subscribe to realtime database changes for live syncing!
+    let subscription;
+    import('../lib/supabaseClient').then(({ supabase }) => {
+      if (supabase) {
+        subscription = supabase
+          .channel('photos-channel')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'photos' }, (payload) => {
+            console.log("Realtime photo change received!", payload);
+            loadDbPhotos(); // Reload when new photo drops
+          })
+          .subscribe();
+      }
+    });
+
+    return () => {
+      if (subscription) {
+        import('../lib/supabaseClient').then(({ supabase }) => {
+          if (supabase) supabase.removeChannel(subscription);
+        });
+      }
+    };
   }, []);
 
   const loadDbPhotos = async () => {

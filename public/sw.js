@@ -1,20 +1,50 @@
+const CACHE_NAME = 'loveydovey-cache-v1';
+const ASSETS_TO_CACHE = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icon.svg'
+];
+
 self.addEventListener('install', (event) => {
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
+    })
+  );
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim());
 });
 
+// Offline Caching (Stale-While-Revalidate pattern)
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        // Cache the new response if it's successful and from our origin
+        if (networkResponse.ok && event.request.url.startsWith(self.location.origin)) {
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, networkResponse.clone());
+          });
+        }
+        return networkResponse;
+      }).catch(() => {
+        return cachedResponse;
+      });
+
+      return cachedResponse || fetchPromise;
+    })
+  );
+});
+
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SCHEDULE_ALARM') {
-    const { timeStr } = event.data; // e.g., "08:00"
-    
-    // In a real push notification setup, the server sends the event.
-    // Here, we try to use periodic sync or just simple setTimeout if the browser keeps the SW alive.
-    // WARNING: setTimeout in SW is paused when the SW is suspended by the browser.
-    // This is a best-effort local fallback for a web app without a backend.
-    
+    const { timeStr } = event.data;
     scheduleLocalAlarm(timeStr);
   }
 });
@@ -39,12 +69,11 @@ function scheduleLocalAlarm(timeStr) {
   alarmTimeout = setTimeout(() => {
     self.registration.showNotification("Vitamin Time! 💊", {
       body: "Take your vitamins, my love! I love you! 🦖",
-      icon: "/images/cute_dino_vitamin.png",
+      icon: "/icon.svg",
       vibrate: [200, 100, 200, 100, 200, 100, 200],
       requireInteraction: true
     });
     
-    // Reschedule for next day
     scheduleLocalAlarm(timeStr);
   }, delay);
 }

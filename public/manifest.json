@@ -1,0 +1,16 @@
+{
+  "name": "For My Love \uD83E\uDD96",
+  "short_name": "LoveyDovey",
+  "description": "A private app just for us \uD83D\uDC95",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffb3c6",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
