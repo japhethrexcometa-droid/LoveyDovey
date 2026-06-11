@@ -4,8 +4,8 @@ import { CalendarHeart } from 'lucide-react';
 import './OJTCountdown.css';
 
 export default function OJTCountdown() {
-  // Target date: August 12, 2026 (2 months from now)
-  const targetDate = new Date("2026-08-12T00:00:00").getTime();
+  // Target date: August 13, 2026 (2 months after she starts on June 13, 2026)
+  const targetDate = new Date("2026-08-13T00:00:00").getTime();
   
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
 
