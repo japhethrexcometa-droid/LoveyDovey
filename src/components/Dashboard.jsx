@@ -5,7 +5,8 @@ import VitaminReminder from './VitaminReminder';
 import MusicPlayer from './MusicPlayer';
 import OJTCountdown from './OJTCountdown';
 import LoveLetter from './LoveLetter';
-import { Image, Pill } from 'lucide-react';
+import OJTTools from './ojt/OJTTools';
+import { Image, Pill, Briefcase } from 'lucide-react';
 import imagesData from '../images.json';
 import './Dashboard.css';
 
@@ -44,13 +45,19 @@ export default function Dashboard() {
             >
               <Pill size={18} /> Vitamins
             </button>
+            <button 
+              className={`tab-btn ${activeTab === 'ojt' ? 'active' : ''}`}
+              onClick={() => setActiveTab('ojt')}
+            >
+              <Briefcase size={18} /> OJT Tools
+            </button>
           </div>
         </div>
       </header>
 
       <main className="dashboard-content">
         <AnimatePresence mode="wait">
-          {activeTab === 'gallery' ? (
+          {activeTab === 'gallery' && (
             <motion.div 
               key="gallery"
               initial={{ opacity: 0, x: -20 }}
@@ -60,7 +67,8 @@ export default function Dashboard() {
               <OJTCountdown />
               <PhotoGallery images={images} />
             </motion.div>
-          ) : (
+          )}
+          {activeTab === 'vitamins' && (
             <motion.div 
               key="vitamins"
               initial={{ opacity: 0, x: 20 }}
@@ -68,6 +76,16 @@ export default function Dashboard() {
               exit={{ opacity: 0, x: -20 }}
             >
               <VitaminReminder />
+            </motion.div>
+          )}
+          {activeTab === 'ojt' && (
+            <motion.div 
+              key="ojt"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <OJTTools />
             </motion.div>
           )}
         </AnimatePresence>
