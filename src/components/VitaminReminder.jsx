@@ -95,6 +95,15 @@ export default function VitaminReminder() {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
+    
+    // Send to Service Worker
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+        type: 'SCHEDULE_ALARM',
+        timeStr: time
+      });
+    }
+
     showToast(`✅ Reminder set for ${formatTime12hr(time)} every day!`);
     setTimeout(() => setSaved(false), 3000);
   };

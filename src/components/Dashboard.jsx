@@ -6,7 +6,8 @@ import MusicPlayer from './MusicPlayer';
 import OJTCountdown from './OJTCountdown';
 import LoveLetter from './LoveLetter';
 import OJTTools from './ojt/OJTTools';
-import { Image, Pill, Briefcase, Menu, X } from 'lucide-react';
+import MoodTracker from './MoodTracker';
+import { Image, Pill, Briefcase, Menu, X, HeartHandshake } from 'lucide-react';
 import imagesData from '../images.json';
 import './Dashboard.css';
 
@@ -58,6 +59,12 @@ export default function Dashboard() {
                 <Pill size={18} /> Vitamins
               </button>
               <button 
+                className={`tab-btn ${activeTab === 'mood' ? 'active' : ''}`}
+                onClick={() => { setActiveTab('mood'); setIsMobileMenuOpen(false); }}
+              >
+                <HeartHandshake size={18} /> Daily Mood
+              </button>
+              <button 
                 className={`tab-btn ${activeTab === 'ojt' ? 'active' : ''}`}
                 onClick={() => { setActiveTab('ojt'); setIsMobileMenuOpen(false); }}
               >
@@ -89,6 +96,16 @@ export default function Dashboard() {
               exit={{ opacity: 0, x: -20 }}
             >
               <VitaminReminder />
+            </motion.div>
+          )}
+          {activeTab === 'mood' && (
+            <motion.div 
+              key="mood"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <MoodTracker />
             </motion.div>
           )}
           {activeTab === 'ojt' && (

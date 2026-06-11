@@ -2,138 +2,274 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  border: none;
-  cursor: pointer;
   padding: 10px 20px;
+  border-radius: 30px;
+  border: none;
+  background: white;
   color: var(--primary);
-  font-weight: 600;
+  font-weight: 700;
   font-family: inherit;
   font-size: 1rem;
-  border-radius: 40px;
-  background: rgba(255, 255, 255, 0.6);
-  transition: all 0.3s ease;
+  cursor: pointer;
   box-shadow: var(--shadow-sm);
-  white-space: nowrap;
-}
-
-.letter-btn:hover {
-  background: white;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  transition: all 0.3s ease;
 }
 
 .letter-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 181, 167, 0.3);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
-  z-index: 1000;
+  z-index: 2000;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
 }
 
-.letter-content {
-  background: white;
-  max-width: 500px;
+.letter-modal {
+  background: #fdfbf7;
   width: 100%;
+  max-width: 500px;
+  border-radius: 12px;
   padding: 40px;
-  border-radius: var(--radius-xl);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   position: relative;
-  border: 8px solid var(--secondary-light);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
+  background-size: 20px 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.letter-modal.list-mode {
+  padding: 30px 20px;
 }
 
 .letter-close {
   position: absolute;
   top: 15px;
   right: 15px;
-  background: transparent;
+  background: rgba(0,0,0,0.05);
   border: none;
-  cursor: pointer;
-  color: var(--text-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  transition: background 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #666;
+  transition: background 0.3s;
+  z-index: 10;
 }
 
 .letter-close:hover {
-  background: var(--bg-color);
-  color: var(--text-dark);
+  background: rgba(0,0,0,0.1);
 }
 
 .letter-icon {
-  margin: 0 auto 20px auto;
+  margin: 0 auto 20px;
   display: block;
 }
 
-.letter-content h2 {
-  color: var(--secondary);
-  font-size: 2rem;
-  margin-bottom: 20px;
-  font-family: 'Outfit', sans-serif;
+.letter-content {
   text-align: center;
 }
 
+.letter-content h2 {
+  color: var(--primary);
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  margin-bottom: 25px;
+}
+
 .letter-body {
-  color: var(--text-dark);
   font-size: 1.1rem;
-  line-height: 1.6;
+  line-height: 1.8;
+  color: #4a4a4a;
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.letter-body p {
+  margin-bottom: 15px;
+}
+
+.letter-signature {
+  text-align: right;
+  font-weight: bold;
+  color: var(--primary);
+  font-size: 1.2rem;
+}
+
+/* Capsule List View */
+.capsules-title {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: var(--text-dark);
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+}
+
+.capsules-subtitle {
+  text-align: center;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+}
+
+.capsules-grid {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.letter-signature {
-  margin-top: 30px;
-  font-size: 1.2rem;
-  color: var(--primary);
-  font-weight: 600;
-  text-align: right;
-  font-style: italic;
+.capsule-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: white;
+  padding: 15px 20px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  position: relative;
+  border-left: 4px solid transparent;
 }
 
-/* Responsiveness for Tablets and Phones */
+.capsule-item.locked {
+  background: #f8f9fa;
+  border-left-color: #cbd5e1;
+  opacity: 0.8;
+}
+
+.capsule-item.unlocked {
+  border-left-color: #ffb3ba;
+}
+
+.capsule-info h4 {
+  color: var(--text-dark);
+  font-size: 1.1rem;
+  margin-bottom: 3px;
+}
+
+.capsule-info p {
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+.capsule-delete {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #ffe3e3;
+  color: #ff6b6b;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Author Mode */
+.author-mode {
+  padding: 10px;
+}
+
+.author-mode h2 {
+  color: #845ec2;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.author-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.author-form input[type="text"],
+.author-form textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+}
+
+.author-form textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.date-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.date-picker-row label {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.date-picker-row input {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+}
+
+.save-capsule-btn {
+  background: #845ec2;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
 @media (max-width: 600px) {
-  .letter-content {
-    padding: 25px;
-    border-width: 4px;
+  .letter-modal {
+    padding: 30px 20px;
+    height: 80vh;
   }
   .letter-content h2 {
-    font-size: 1.6rem;
-    margin-bottom: 15px;
+    font-size: 1.5rem;
   }
   .letter-body {
     font-size: 1rem;
-    line-height: 1.5;
   }
-  .letter-signature {
-    margin-top: 20px;
-    font-size: 1.1rem;
-  }
-  .letter-btn {
-    padding: 8px 16px;
-    font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 400px) {
-  .letter-content {
-    padding: 20px 15px;
-  }
-  .letter-body {
-    font-size: 0.95rem;
-  }
-  .letter-btn {
-    padding: 8px 12px;
-    font-size: 0.85rem;
+  .capsules-title {
+    font-size: 1.5rem;
   }
 }

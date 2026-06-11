@@ -65,7 +65,7 @@ export default function DailyLogbook() {
       </div>
       
       <div className="tool-tip">
-        <strong>💡 Tip:</strong> Your handsome engineer made sure this auto-saves as you type. Just click the copy icon when you need to paste it into your official OJT report!
+        <strong>💡 Tip:</strong> Your handsome LoveyDovey made sure this auto-saves as you type. Just click the copy icon when you need to paste it into your official OJT report!
       </div>
     </motion.div>
   );
