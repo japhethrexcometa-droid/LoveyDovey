@@ -21,14 +21,25 @@
   box-sizing: border-box;
 }
 
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Outfit', sans-serif;
   background-color: var(--bg-color);
   background-image: radial-gradient(var(--secondary-light) 1.5px, transparent 1.5px);
   background-size: 25px 25px;
   color: var(--text-dark);
-  overflow-x: hidden;
   min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .glass-panel {
@@ -41,9 +52,11 @@ body {
 
 .app-container {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
+  overflow-x: hidden;
 }
 
 /* Scrollbar */

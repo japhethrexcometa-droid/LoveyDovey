@@ -38,13 +38,13 @@ export default function LoveLetter() {
                 <X size={20} />
               </button>
               <Heart className="letter-icon pulse" size={32} color="#ff6b6b" fill="#ff6b6b" />
-              <h2>To My Love,</h2>
+              <h2>To My LoveyDovey,</h2>
               <div className="letter-body">
                 <p>Even though you are away for your 2 months of OJT, I want you to know how much I love you and how proud I am of you.</p>
                 <p>I built this little system so that whenever you miss me, you can look at our memories, listen to our favorite song or my favorite song for you, and remember to take your vitamins!</p>
                 <p>I will be waiting for you. Take care of yourself always!</p>
               </div>
-              <p className="letter-signature">- Your handsome engineer 🦖</p>
+              <p className="letter-signature">- Your handsome LoveyDovey 🦖</p>
             </motion.div>
           </motion.div>
         )}
