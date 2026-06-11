@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import PhotoGallery from './PhotoGallery';
 import VitaminReminder from './VitaminReminder';
 import MusicPlayer from './MusicPlayer';
+import OJTCountdown from './OJTCountdown';
+import LoveLetter from './LoveLetter';
 import { Image, Pill } from 'lucide-react';
 import imagesData from '../images.json';
 import './Dashboard.css';
@@ -22,55 +24,56 @@ export default function Dashboard() {
       className="dashboard-container"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
+      exit={{ opacity: 0 }}
     >
-      <MusicPlayer />
-      
       <header className="dashboard-header glass-panel">
-        <h2 className="dashboard-title">For My Love 🦖</h2>
-        <div className="tab-navigation">
-          <button 
-            className={`tab-btn ${activeTab === 'gallery' ? 'active' : ''}`}
-            onClick={() => setActiveTab('gallery')}
-          >
-            <Image size={18} /> Our Memories
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'vitamins' ? 'active' : ''}`}
-            onClick={() => setActiveTab('vitamins')}
-          >
-            <Pill size={18} /> Vitamins
-          </button>
+        <div className="dashboard-title">For My Love 🦖</div>
+        
+        <div className="header-actions">
+          <LoveLetter />
+          <div className="tab-navigation">
+            <button 
+              className={`tab-btn ${activeTab === 'gallery' ? 'active' : ''}`}
+              onClick={() => setActiveTab('gallery')}
+            >
+              <Image size={18} /> Our Memories
+            </button>
+            <button 
+              className={`tab-btn ${activeTab === 'vitamins' ? 'active' : ''}`}
+              onClick={() => setActiveTab('vitamins')}
+            >
+              <Pill size={18} /> Vitamins
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="dashboard-main">
+      <main className="dashboard-content">
         <AnimatePresence mode="wait">
           {activeTab === 'gallery' ? (
-            <motion.div
+            <motion.div 
               key="gallery"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-              className="tab-content"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
             >
+              <OJTCountdown />
               <PhotoGallery images={images} />
             </motion.div>
           ) : (
-            <motion.div
+            <motion.div 
               key="vitamins"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-              className="tab-content"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
             >
               <VitaminReminder />
             </motion.div>
           )}
         </AnimatePresence>
       </main>
+
+      <MusicPlayer />
     </motion.div>
   );
 }

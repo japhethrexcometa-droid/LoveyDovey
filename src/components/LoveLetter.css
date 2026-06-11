@@ -1,0 +1,63 @@
+.letter-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  color: var(--primary);
+  font-weight: 600;
+}
+.letter-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.letter-content {
+  background: #fff9fa;
+  padding: 40px;
+  border-radius: var(--radius-lg);
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(255, 105, 180, 0.2);
+  background-image: repeating-linear-gradient(transparent, transparent 29px, #ffd1dc 30px);
+  background-attachment: local;
+  line-height: 30px;
+}
+.letter-close {
+  position: absolute;
+  top: 15px; right: 15px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #aaa;
+}
+.letter-icon {
+  display: block;
+  margin: 0 auto 20px;
+}
+.letter-content h2 {
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+.letter-body p {
+  color: #444;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+.letter-signature {
+  text-align: right;
+  font-weight: 600;
+  color: var(--primary);
+  margin-top: 30px;
+  font-size: 1.2rem;
+}
