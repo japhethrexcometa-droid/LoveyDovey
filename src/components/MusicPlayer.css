@@ -81,11 +81,11 @@
 
 @media (max-width: 768px) {
   .music-player {
-    bottom: 15px;
-    left: 50% !important; /* Force override Framer Motion drag if any */
-    transform: translateX(-50%) !important;
-    width: 90%;
-    max-width: 350px;
+    bottom: 12px;
+    left: 12px !important; /* Force override Framer Motion drag */
+    transform: none !important;
+    width: calc(100vw - 24px);
+    max-width: 100%;
     padding: 10px 15px;
     gap: 10px;
     justify-content: space-between;

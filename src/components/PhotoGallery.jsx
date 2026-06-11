@@ -29,7 +29,8 @@ export default function PhotoGallery({ images }) {
     const reader = new FileReader();
     reader.onloadend = async () => {
       const base64String = reader.result;
-      await savePhoto(base64String, '');
+      const caption = prompt("Enter a sweet caption for this memory 💕:") || "A beautiful moment together";
+      await savePhoto(base64String, caption);
       await loadDbPhotos();
     };
     reader.readAsDataURL(file);
@@ -44,9 +45,17 @@ export default function PhotoGallery({ images }) {
 
   const allItems = [
     // Database photos first
-    ...dbPhotos.map(p => ({ isDb: true, id: p.id, src: p.data })),
+    ...dbPhotos.map(p => {
+      const d = new Date(p.date);
+      const dateStr = !isNaN(d) ? d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+      return { isDb: true, id: p.id, src: p.data, caption: p.caption, date: dateStr };
+    }),
     // Then original JSON images
-    ...(images || []).map(img => ({ isDb: false, id: img, src: `/images/${img}` }))
+    ...(images || []).map(img => {
+      // Create a fake date/caption for hardcoded images
+      const niceName = img.replace(/_/g, ' ').replace(/\.[^/.]+$/, "");
+      return { isDb: false, id: img, src: `/images/${img}`, caption: niceName, date: 'Our Past Memories' };
+    })
   ];
 
   if (allItems.length === 0) {
@@ -95,7 +104,11 @@ export default function PhotoGallery({ images }) {
             whileHover={{ scale: 1.02, zIndex: 10 }}
             onClick={() => setSelectedId(item)}
           >
-            <img src={item.src} alt="Memory" loading="lazy" />
+            <img src={item.src} alt={item.caption || "Memory"} loading="lazy" />
+            <div className="gallery-caption">
+              <strong>{item.caption}</strong>
+              {item.date && <div style={{ fontSize: '0.75rem', marginTop: '2px', opacity: 0.8 }}>{item.date}</div>}
+            </div>
           </motion.div>
         ))}
       </div>
