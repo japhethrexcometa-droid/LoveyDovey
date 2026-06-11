@@ -7,9 +7,10 @@ export default function VitaminReminder() {
   const [time, setTime] = useState(localStorage.getItem('vitaminTime') || '08:00');
   const [saved, setSaved] = useState(false);
   const [isTime, setIsTime] = useState(false);
+  const [lastAlertTime, setLastAlertTime] = useState(null);
 
   useEffect(() => {
-    // Check every minute if it's time
+    // Check every second if it's time
     const interval = setInterval(() => {
       if (!time) return;
       const now = new Date();
@@ -17,14 +18,15 @@ export default function VitaminReminder() {
       const currentMinutes = String(now.getMinutes()).padStart(2, '0');
       const currentTime = `${currentHours}:${currentMinutes}`;
       
-      // If it's exactly the minute they set and we haven't alerted yet this minute
-      if (currentTime === time && now.getSeconds() < 2) {
+      // If it's the minute they set and we haven't alerted yet for this specific minute
+      if (currentTime === time && lastAlertTime !== currentTime) {
         setIsTime(true);
+        setLastAlertTime(currentTime);
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [time]);
+  }, [time, lastAlertTime]);
 
   const handleSave = () => {
     localStorage.setItem('vitaminTime', time);
