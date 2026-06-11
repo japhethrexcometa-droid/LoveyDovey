@@ -11,6 +11,7 @@
   padding: 10px;
   border-radius: var(--radius-xl);
   overflow-x: auto;
+  flex-wrap: nowrap;
   scrollbar-width: none; /* Firefox */
 }
 .ojt-tools-nav::-webkit-scrollbar {
@@ -78,6 +79,7 @@
 .logbook-textarea {
   width: 100%;
   height: 250px;
+  max-height: 40vh;
   padding: 20px;
   border-radius: var(--radius-lg);
   border: 2px solid var(--primary-light);
@@ -86,6 +88,7 @@
   font-size: 1rem;
   color: var(--text-dark);
   resize: vertical;
+  overflow-y: auto;
   line-height: 1.5;
   transition: border-color 0.3s;
 }
@@ -120,6 +123,33 @@
 }
 .icon-btn:hover {
   transform: scale(1.05);
+}
+
+.logbook-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.word-count {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.mobile-copy-btn {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 40px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
 }
 
 .tool-tip {
@@ -365,5 +395,11 @@
   .expense-form button {
     width: 100%;
     border-radius: 50px;
+  }
+  .icon-btn.desktop-copy {
+    display: none; /* Hide tiny copy button on mobile */
+  }
+  .mobile-copy-btn {
+    display: flex;
   }
 }

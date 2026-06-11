@@ -6,13 +6,14 @@ import MusicPlayer from './MusicPlayer';
 import OJTCountdown from './OJTCountdown';
 import LoveLetter from './LoveLetter';
 import OJTTools from './ojt/OJTTools';
-import { Image, Pill, Briefcase } from 'lucide-react';
+import { Image, Pill, Briefcase, Menu, X } from 'lucide-react';
 import imagesData from '../images.json';
 import './Dashboard.css';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('gallery');
   const [images, setImages] = useState([]);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Randomize images so it looks fresh every time!
@@ -32,26 +33,38 @@ export default function Dashboard() {
         
         <div className="header-actions">
           <LoveLetter />
-          <div className="tab-navigation">
-            <button 
-              className={`tab-btn ${activeTab === 'gallery' ? 'active' : ''}`}
-              onClick={() => setActiveTab('gallery')}
+          
+          <button 
+            className="mobile-menu-btn"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          <AnimatePresence>
+            <motion.div 
+              className={`tab-navigation ${isMobileMenuOpen ? 'mobile-open' : ''}`}
             >
-              <Image size={18} /> Our Memories
-            </button>
-            <button 
-              className={`tab-btn ${activeTab === 'vitamins' ? 'active' : ''}`}
-              onClick={() => setActiveTab('vitamins')}
-            >
-              <Pill size={18} /> Vitamins
-            </button>
-            <button 
-              className={`tab-btn ${activeTab === 'ojt' ? 'active' : ''}`}
-              onClick={() => setActiveTab('ojt')}
-            >
-              <Briefcase size={18} /> OJT Tools
-            </button>
-          </div>
+              <button 
+                className={`tab-btn ${activeTab === 'gallery' ? 'active' : ''}`}
+                onClick={() => { setActiveTab('gallery'); setIsMobileMenuOpen(false); }}
+              >
+                <Image size={18} /> Our Memories
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'vitamins' ? 'active' : ''}`}
+                onClick={() => { setActiveTab('vitamins'); setIsMobileMenuOpen(false); }}
+              >
+                <Pill size={18} /> Vitamins
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'ojt' ? 'active' : ''}`}
+                onClick={() => { setActiveTab('ojt'); setIsMobileMenuOpen(false); }}
+              >
+                <Briefcase size={18} /> OJT Tools
+              </button>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </header>
 

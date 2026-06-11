@@ -27,6 +27,8 @@ export default function DailyLogbook() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const wordCount = log.trim() ? log.trim().split(/\s+/).length : 0;
+
   return (
     <motion.div 
       className="tool-card glass-panel"
@@ -38,7 +40,7 @@ export default function DailyLogbook() {
           <h2>🚜 Daily Farm Logbook</h2>
           <p>Record your animal observations and farm activities today!</p>
         </div>
-        <button className="icon-btn" onClick={handleCopy} title="Copy to Clipboard">
+        <button className="icon-btn desktop-copy" onClick={handleCopy} title="Copy to Clipboard">
           {copied ? <CheckCircle2 color="green" /> : <Copy />}
         </button>
       </div>
@@ -53,6 +55,13 @@ export default function DailyLogbook() {
         <div className="save-status">
           {saved ? <span className="saved-text"><Save size={12}/> Auto-saved!</span> : null}
         </div>
+      </div>
+
+      <div className="logbook-footer">
+        <span className="word-count">{wordCount} word{wordCount !== 1 ? 's' : ''}</span>
+        <button className="mobile-copy-btn" onClick={handleCopy}>
+          <Copy size={16} /> Copy log
+        </button>
       </div>
       
       <div className="tool-tip">

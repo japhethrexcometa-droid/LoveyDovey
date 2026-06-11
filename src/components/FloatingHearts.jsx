@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export default function FloatingHearts() {
-  const hearts = Array.from({ length: 15 });
+  const hearts = Array.from({ length: 5 }); // Reduced to 5 to save mobile CPU
 
   return (
     <div className="floating-hearts-container">
@@ -16,6 +16,7 @@ export default function FloatingHearts() {
           <motion.div
             key={i}
             className="heart"
+            style={{ willChange: "transform" }}
             initial={{ y: "110vh", x: `${left}vw`, opacity: 0.8, scale }}
             animate={{ y: "-10vh", opacity: 0 }}
             transition={{
