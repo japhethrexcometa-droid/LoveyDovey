@@ -39,18 +39,52 @@ export default function VitaminReminder() {
   const triggerAlarm = () => {
     setIsTime(true);
     
-    // Play loud alarm sound
     try {
-      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+      const audio = new Audio('/alarm-audio.webm');
       audio.loop = true;
+      audio.crossOrigin = "anonymous";
+      
+      // Enhance voice using Web Audio API (Compression & Gain)
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const source = audioCtx.createMediaElementSource(audio);
+      
+      // Compressor to make vocals clearer and louder without clipping
+      const compressor = audioCtx.createDynamicsCompressor();
+      compressor.threshold.value = -50;
+      compressor.knee.value = 40;
+      compressor.ratio.value = 12;
+      compressor.attack.value = 0;
+      compressor.release.value = 0.25;
+
+      // Gain to boost volume significantly
+      const gainNode = audioCtx.createGain();
+      gainNode.gain.value = 4.0; // 4x louder!
+
+      source.connect(compressor);
+      compressor.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      // Handle suspended state on mobile browsers
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      
       audio.play().catch(e => console.log("Audio autoplay prevented by browser", e));
       audioRef.current = audio;
-    } catch(e) {}
+    } catch(e) {
+      // Fallback if Web Audio API fails
+      console.log("Web Audio API failed, using standard audio", e);
+      const fallbackAudio = new Audio('/alarm-audio.webm');
+      fallbackAudio.loop = true;
+      fallbackAudio.volume = 1.0;
+      fallbackAudio.play().catch(e => console.log("Audio autoplay prevented", e));
+      audioRef.current = fallbackAudio;
+    }
 
     // Show system notification
     if ("Notification" in window && Notification.permission === "granted") {
-      new Notification("💊 It's Vitamin Time!", {
-        body: "Don't forget to take your vitamins, my love!",
+      new Notification(`Alarm ${formatTime12hr(time)} Wake up`, {
+        body: "Vitamin time! Tap to stop.",
         icon: "/images/cute_dino_vitamin.png"
       });
     }
@@ -71,6 +105,15 @@ export default function VitaminReminder() {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
+  };
+
+  const formatTime12hr = (time24) => {
+    if (!time24) return '';
+    const [h, m] = time24.split(':');
+    const hours = parseInt(h, 10);
+    const suffix = hours >= 12 ? 'PM' : 'AM';
+    const hours12 = hours % 12 || 12;
+    return `${hours12}:${m} ${suffix}`;
   };
 
   const handleSyncCalendar = () => {
@@ -127,18 +170,23 @@ END:VCALENDAR`;
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="reminder-alert glass-panel"
-              initial={{ scale: 0.8, y: 50 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.8, y: 50 }}
-              transition={{ type: 'spring', bounce: 0.5 }}
+              className="android-alarm-popup"
+              initial={{ y: -100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -100, opacity: 0 }}
+              transition={{ type: 'spring', bounce: 0.4 }}
             >
-              <img src="/images/cute_dino_vitamin.png" alt="Vitamin Dino" className="alert-dino pulse" />
-              <h2>It's Vitamin Time! 💊</h2>
-              <p>Don't forget to take your vitamins, my love!</p>
-              <button className="dismiss-btn" onClick={handleDismiss}>
-                <Check size={20} /> I took them!
-              </button>
+              <div className="android-alarm-header">
+                <Clock size={16} fill="#5f6368" color="white" />
+                <span>Clock</span>
+              </div>
+              <div className="android-alarm-title">
+                Alarm {formatTime12hr(time)} Wake up
+              </div>
+              <div className="android-alarm-buttons">
+                <button className="android-btn snooze-btn" onClick={handleDismiss}>Snooze</button>
+                <button className="android-btn stop-btn" onClick={handleDismiss}>Stop</button>
+              </div>
             </motion.div>
           </motion.div>
         )}
