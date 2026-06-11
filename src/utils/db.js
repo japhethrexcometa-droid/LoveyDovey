@@ -21,8 +21,9 @@ export const initDB = () => {
 };
 
 // -- PHOTOS --
-export const savePhoto = async (file, base64Data, caption) => {
+export const savePhoto = async (file, base64Data, caption, dateOverride = null) => {
   const id = Date.now().toString();
+  const timestamp = dateOverride ? new Date(dateOverride).getTime() : Date.now();
   let imageUrl = base64Data;
 
   // Sync to Supabase
@@ -48,14 +49,14 @@ export const savePhoto = async (file, base64Data, caption) => {
       id, 
       data: imageUrl, 
       caption, 
-      date: Date.now() 
+      date: timestamp 
     }]);
     
     if (dbError) console.error("Supabase DB error:", dbError);
   }
 
   // Save to IndexedDB
-  const photo = { id, data: imageUrl, caption, date: Date.now() };
+  const photo = { id, data: imageUrl, caption, date: timestamp };
   const db = await initDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction('photos', 'readwrite');

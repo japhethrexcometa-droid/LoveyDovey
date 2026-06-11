@@ -403,3 +403,91 @@
     display: flex;
   }
 }
+
+/* Savings Goal Styles */
+.savings-goal-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+.savings-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.savings-header h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+}
+.savings-setup {
+  text-align: center;
+  padding: 15px;
+}
+.savings-setup p {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+.savings-setup-btn {
+  gap: 6px;
+  display: inline-flex;
+  align-items: center;
+}
+.savings-progress-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.savings-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.savings-goal-name {
+  font-weight: 700;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.savings-amounts {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  font-weight: 600;
+}
+.savings-bar-track {
+  width: 100%;
+  height: 10px;
+  background: rgba(0,0,0,0.06);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.savings-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--primary), #7bbba6);
+  transition: width 0.8s ease;
+}
+.savings-bar-fill.complete {
+  background: linear-gradient(90deg, #ffd93d, #ff6b6b, #c084fc);
+}
+.savings-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.goal-reached-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ff6b6b;
+  animation: pulseGlow 1s ease infinite;
+}
+@keyframes pulseGlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+

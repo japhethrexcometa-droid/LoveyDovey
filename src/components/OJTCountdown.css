@@ -5,6 +5,8 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 20px;
+  position: relative;
+  overflow: visible;
 }
 .countdown-header {
   display: flex;
@@ -47,6 +49,124 @@
   font-weight: 600;
 }
 
+/* Milestone Progress Bar */
+.milestone-section {
+  width: 100%;
+  margin-top: 16px;
+  padding: 0 5px;
+}
+.progress-bar-track {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  background: rgba(0,0,0,0.06);
+  border-radius: 99px;
+  overflow: visible;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--primary), #ff9ec6);
+}
+.milestone-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  border: 2px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+.milestone-marker.reached {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 8px rgba(148, 210, 189, 0.5);
+  transform: translate(-50%, -50%) scale(1.15);
+}
+.marker-emoji {
+  font-size: 11px;
+  line-height: 1;
+}
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* Milestone Toast */
+.milestone-toast {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--primary), #ff9ec6);
+  color: white;
+  padding: 8px 18px;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+
+/* Day 0 Full Screen Celebration */
+.countdown-celebration {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #fff5f7 0%, #f0fff4 50%, #ebf8ff 100%);
+  overflow: hidden;
+}
+.celebration-confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.celebration-confetti .confetti-piece {
+  position: absolute;
+  top: 0;
+  border-radius: 3px;
+}
+.celebration-content {
+  text-align: center;
+  z-index: 2;
+  padding: 30px;
+}
+.celebration-dino {
+  font-size: 5rem;
+  display: block;
+  margin-bottom: 15px;
+}
+.celebration-content h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+.celebration-content p {
+  font-size: 1.2rem;
+  color: var(--text-dark);
+}
+.celebration-sub {
+  margin-top: 10px;
+  font-size: 1rem !important;
+  color: var(--text-light) !important;
+}
+
 @media (max-width: 500px) {
   .countdown-card {
     padding: 15px 15px;
@@ -66,5 +186,11 @@
   }
   .time-label {
     font-size: 0.65rem;
+  }
+  .celebration-content h1 {
+    font-size: 2rem;
+  }
+  .celebration-dino {
+    font-size: 3.5rem;
   }
 }
