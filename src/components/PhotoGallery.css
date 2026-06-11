@@ -1,5 +1,54 @@
 .gallery-container {
   padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.gallery-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 10px;
+}
+
+.upload-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+}
+.upload-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.delete-photo-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 107, 107, 0.9);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 100;
+}
+.delete-photo-btn:hover {
+  background: #ff5252;
 }
 
 .masonry-grid {

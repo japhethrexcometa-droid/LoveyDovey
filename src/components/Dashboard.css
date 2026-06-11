@@ -1,8 +1,11 @@
 .dashboard-container {
   padding: 20px;
+  padding-bottom: 100px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
   gap: 20px;
 }
 
@@ -88,10 +91,12 @@
 @media (max-width: 600px) {
   .dashboard-container {
     padding: 10px;
+    padding-bottom: 100px;
     gap: 10px;
   }
   .dashboard-header {
-    top: 10px;
+    position: relative;
+    top: 0;
     border-radius: var(--radius-lg);
   }
   .dashboard-title {
