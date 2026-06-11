@@ -1,0 +1,81 @@
+.music-player {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 25px;
+  border-radius: 50px;
+  z-index: 100;
+}
+
+.music-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.music-icon {
+  background: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  color: var(--primary);
+}
+
+.spin {
+  animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+.music-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.song-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+}
+
+.artist {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.play-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(148, 210, 189, 0.4);
+}
+
+.play-btn:hover {
+  background: #7bbba6;
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .music-player {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) !important;
+  }
+}
