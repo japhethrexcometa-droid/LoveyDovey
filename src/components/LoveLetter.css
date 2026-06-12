@@ -22,9 +22,16 @@
   backdrop-filter: blur(8px);
   z-index: 2000;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
   padding: 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.letter-overlay::before,
+.letter-overlay::after {
+  content: '';
+  margin: auto;
 }
 
 .letter-modal {
@@ -37,8 +44,8 @@
   box-shadow: 0 20px 40px rgba(0,0,0,0.2);
   background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
   background-size: 20px 20px;
-  max-height: 90vh;
-  overflow-y: auto;
+  flex-shrink: 0;
+  margin: 20px 0;
 }
 
 .letter-modal.list-mode {
@@ -89,6 +96,8 @@
   color: #4a4a4a;
   text-align: left;
   margin-bottom: 30px;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .letter-body p {
@@ -261,7 +270,6 @@
 @media (max-width: 600px) {
   .letter-modal {
     padding: 30px 20px;
-    height: 80vh;
   }
   .letter-content h2 {
     font-size: 1.5rem;

@@ -134,7 +134,7 @@ export default function LoveLetter() {
                   <h2>{selectedCapsule.title}</h2>
                   <div className="letter-body">
                     {selectedCapsule.message.split('\n').map((para, i) => (
-                      <p key={i}>{para}</p>
+                      <p key={i}>{para || <br />}</p>
                     ))}
                   </div>
                   <p className="letter-signature">- Your handsome LoveyDovey 🦖</p>
