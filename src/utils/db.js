@@ -99,19 +99,41 @@ export const deletePhoto = async (id) => {
 };
 
 // -- MOODS --
-export const saveMood = async (dateStr, mood) => {
+export const saveMood = async (dateStr, moodObj, role) => {
+  let mergedMoods = {};
+
   if (supabase) {
-    const { error } = await supabase.from('moods').upsert([{ date: dateStr, mood }]);
+    const { data } = await supabase.from('moods').select('mood').eq('date', dateStr).single();
+    if (data && data.mood) {
+      if (data.mood.emoji) mergedMoods = { legacy: data.mood };
+      else mergedMoods = data.mood;
+    }
+    mergedMoods[role] = moodObj;
+    
+    const { error } = await supabase.from('moods').upsert([{ date: dateStr, mood: mergedMoods }]);
     if (error) console.error("Supabase error:", error);
+  } else {
+    mergedMoods[role] = moodObj; // Fallback if no supabase
   }
 
   const db = await initDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction('moods', 'readwrite');
     const store = tx.objectStore('moods');
-    const request = store.put({ date: dateStr, mood });
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+    const getReq = store.get(dateStr);
+    
+    getReq.onsuccess = () => {
+      let idbMoods = {};
+      if (getReq.result && getReq.result.mood) {
+        if (getReq.result.mood.emoji) idbMoods = { legacy: getReq.result.mood };
+        else idbMoods = getReq.result.mood;
+      }
+      idbMoods[role] = moodObj;
+      const putReq = store.put({ date: dateStr, mood: idbMoods });
+      putReq.onsuccess = () => resolve(idbMoods);
+      putReq.onerror = () => reject(putReq.error);
+    };
+    getReq.onerror = () => reject(getReq.error);
   });
 };
 

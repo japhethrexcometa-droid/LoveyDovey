@@ -138,6 +138,36 @@
   border-radius: 2px;
 }
 
+.dual-cell {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  padding: 0;
+}
+
+.half-cell {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cell-emoji-small {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.partner-mood-banner {
+  background: var(--glass-bg);
+  padding: 15px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 25px;
+  text-align: center;
+  border: 1px solid rgba(255, 179, 186, 0.4);
+  color: var(--text-dark);
+}
+
 .mood-confetti {
   position: absolute;
   top: 50%;
