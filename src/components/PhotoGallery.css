@@ -20,11 +20,10 @@
   border: none;
   padding: 10px 20px;
   border-radius: 50px;
-  font-weight: 600;
-  font-size: 0.95rem;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   transition: all 0.2s;
+  min-height: 48px;
 }
 .upload-btn:hover {
   transform: translateY(-2px);
@@ -46,6 +45,7 @@
   font-weight: 600;
   cursor: pointer;
   z-index: 100;
+  min-height: 48px;
 }
 .delete-photo-btn:hover {
   background: #ff5252;
@@ -165,6 +165,8 @@
   cursor: pointer;
   transition: background 0.3s ease;
   z-index: 1001;
+  min-width: 48px;
+  min-height: 48px;
 }
 
 .lightbox-close:hover {
@@ -201,6 +203,8 @@
   padding: 5px;
   border-radius: 50%;
   transition: background 0.2s;
+  min-width: 48px;
+  min-height: 48px;
 }
 .upload-close:hover {
   background: rgba(0,0,0,0.05);
@@ -272,6 +276,7 @@
   cursor: pointer;
   transition: all 0.2s;
   margin-top: 5px;
+  min-height: 48px;
 }
 .upload-submit-btn:hover {
   background: #7bbba6;

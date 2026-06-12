@@ -13,6 +13,15 @@
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
   --radius-lg: 24px;
   --radius-xl: 32px;
+  
+  /* Adaptive Typography Scale */
+  --text-xs: clamp(0.75rem, 0.71rem + 0.2vw, 0.85rem);
+  --text-sm: clamp(0.875rem, 0.83rem + 0.24vw, 1rem);
+  --text-base: clamp(1rem, 0.94rem + 0.31vw, 1.15rem);
+  --text-lg: clamp(1.125rem, 1.05rem + 0.39vw, 1.3rem);
+  --text-xl: clamp(1.25rem, 1.15rem + 0.49vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.35rem + 0.75vw, 2rem);
+  --text-3xl: clamp(1.875rem, 1.65rem + 1.1vw, 2.5rem);
 }
 
 * {
@@ -34,6 +43,12 @@ body {
   background-size: 25px 25px;
   color: var(--text-dark);
   min-height: 100vh;
+  font-size: var(--text-base);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.2;
 }
 
 #root {
