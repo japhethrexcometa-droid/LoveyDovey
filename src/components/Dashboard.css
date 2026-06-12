@@ -11,9 +11,9 @@
 .dashboard-header {
   position: fixed;
   top: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 40px);
+  left: 20px;
+  right: 20px;
+  margin: 0 auto;
   max-width: 1200px;
   padding: 12px 24px;
   border-radius: 100px;
@@ -119,6 +119,8 @@
   .dashboard-header {
     top: 0;
     left: 0;
+    right: 0;
+    margin: 0;
     width: 100%;
     max-width: 100%;
     border-radius: 0 0 24px 24px;
