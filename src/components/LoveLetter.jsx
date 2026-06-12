@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Heart, X, Lock, Unlock, Plus } from 'lucide-react';
 import { saveCapsule, getCapsules, deleteCapsule } from '../utils/db';
@@ -101,7 +102,7 @@ export default function LoveLetter() {
       </motion.button>
 
       <AnimatePresence>
-        {isModalOpen && (
+        {isModalOpen && createPortal(
           <motion.div 
             className="letter-overlay"
             initial={{ opacity: 0 }}
@@ -211,7 +212,8 @@ export default function LoveLetter() {
                 </div>
               )}
             </motion.div>
-          </motion.div>
+          </motion.div>,
+          document.body
         )}
       </AnimatePresence>
     </>
