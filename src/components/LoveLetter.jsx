@@ -99,121 +99,109 @@ export default function LoveLetter() {
         <span>Open Me!</span>
       </button>
 
-      <AnimatePresence>
-        {isModalOpen && createPortal(
-          <motion.div 
-            className="letter-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => { setIsModalOpen(false); setSelectedCapsule(null); setIsAuthorMode(false); }}
+      {isModalOpen && (
+        <div 
+          className="letter-overlay"
+          onClick={() => { setIsModalOpen(false); setSelectedCapsule(null); setIsAuthorMode(false); }}
+        >
+          <div 
+            className={`letter-modal ${selectedCapsule ? 'reading-mode' : 'list-mode'}`}
+            onClick={(e) => e.stopPropagation()}
           >
-            <motion.div 
-              className={`letter-modal ${selectedCapsule ? 'reading-mode' : 'list-mode'}`}
-              initial={{ scale: 0.8, y: 50, opacity: 0 }}
-              animate={{ scale: 1, y: 0, opacity: 1 }}
-              exit={{ scale: 0.8, y: 50, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
+            <button 
+              className="letter-close" 
+              onClick={() => {
+                if (selectedCapsule) setSelectedCapsule(null);
+                else if (isAuthorMode) setIsAuthorMode(false);
+                else setIsModalOpen(false);
+              }}
             >
-              <button 
-                className="letter-close" 
-                onClick={() => {
-                  if (selectedCapsule) setSelectedCapsule(null);
-                  else if (isAuthorMode) setIsAuthorMode(false);
-                  else setIsModalOpen(false);
-                }}
-              >
-                <X size={20} />
-              </button>
+              <X size={20} />
+            </button>
 
-              {/* READING MODE */}
-              {selectedCapsule ? (
-                <div className="letter-content">
-                  <Heart className="letter-icon pulse" size={32} color="#ff6b6b" fill="#ff6b6b" />
-                  <h2>{selectedCapsule.title}</h2>
-                  <div className="letter-body">
-                    {selectedCapsule.message.split('\n').map((para, i) => (
-                      <p key={i}>{para || <br />}</p>
-                    ))}
-                  </div>
-                  <p className="letter-signature">- Your handsome LoveyDovey 🦖</p>
+            {/* READING MODE */}
+            {selectedCapsule ? (
+              <div className="letter-content">
+                <Heart className="letter-icon pulse" size={32} color="#ff6b6b" fill="#ff6b6b" />
+                <h2>{selectedCapsule.title}</h2>
+                <div className="letter-body">
+                  {selectedCapsule.message.split('\n').map((para, i) => (
+                    <p key={i}>{para || <br />}</p>
+                  ))}
                 </div>
-              ) : isAuthorMode ? (
-                /* AUTHOR MODE (SECRET) */
-                <div className="author-mode">
-                  <h2>Write a Time Capsule 🤫</h2>
-                  <form onSubmit={handleAddCapsule} className="author-form">
+                <p className="letter-signature">- Your handsome LoveyDovey 🦖</p>
+              </div>
+            ) : isAuthorMode ? (
+              /* AUTHOR MODE (SECRET) */
+              <div className="author-mode">
+                <h2>Write a Time Capsule 🤫</h2>
+                <form onSubmit={handleAddCapsule} className="author-form">
+                  <input 
+                    type="text" 
+                    placeholder="Title (e.g. For our Anniversary)" 
+                    value={newTitle} 
+                    onChange={e => setNewTitle(e.target.value)}
+                    required
+                  />
+                  <textarea 
+                    placeholder="Write your sweet message here..." 
+                    value={newMessage}
+                    onChange={e => setNewMessage(e.target.value)}
+                    required
+                  />
+                  <div className="date-picker-row">
+                    <label>Unlock Date:</label>
                     <input 
-                      type="text" 
-                      placeholder="Title (e.g. For our Anniversary)" 
-                      value={newTitle} 
-                      onChange={e => setNewTitle(e.target.value)}
+                      type="date" 
+                      value={newUnlockDate}
+                      onChange={e => setNewUnlockDate(e.target.value)}
                       required
                     />
-                    <textarea 
-                      placeholder="Write your sweet message here..." 
-                      value={newMessage}
-                      onChange={e => setNewMessage(e.target.value)}
-                      required
-                    />
-                    <div className="date-picker-row">
-                      <label>Unlock Date:</label>
-                      <input 
-                        type="date" 
-                        value={newUnlockDate}
-                        onChange={e => setNewUnlockDate(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <button type="submit" className="save-capsule-btn">
-                      Seal Capsule <Lock size={16} />
-                    </button>
-                  </form>
-                </div>
-              ) : (
-                /* CAPSULE LIST MODE */
-                <div className="capsule-list-view">
-                  <h2 onClick={handleTitleTap} className="capsules-title">
-                    Time Capsules <Heart size={20} fill="var(--primary)" color="var(--primary)" />
-                  </h2>
-                  <p className="capsules-subtitle">Messages waiting for the perfect moment.</p>
-                  
-                  <div className="capsules-grid">
-                    {capsules.map(capsule => {
-                      const unlockTime = new Date(capsule.unlockDate).getTime();
-                      const isLocked = Date.now() < unlockTime;
-                      return (
-                        <motion.div 
-                          key={capsule.id}
-                          className={`capsule-item ${isLocked ? 'locked' : 'unlocked'}`}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => openCapsule(capsule)}
-                        >
-                          <div className="capsule-icon">
-                            {isLocked ? <Lock size={24} color="#a0aec0" /> : <Unlock size={24} color="#ff6b6b" />}
-                          </div>
-                          <div className="capsule-info">
-                            <h4>{capsule.title}</h4>
-                            <p>{isLocked ? `Locked until ${new Date(capsule.unlockDate).toLocaleDateString()}` : 'Ready to read!'}</p>
-                          </div>
-                          {/* Only show delete in author mode to prevent accidental deletion by her */}
-                          {isAuthorMode && (
-                            <button className="capsule-delete" onClick={(e) => handleDelete(e, capsule.id)}>
-                              <X size={16} />
-                            </button>
-                          )}
-                        </motion.div>
-                      );
-                    })}
                   </div>
+                  <button type="submit" className="save-capsule-btn">
+                    Seal Capsule <Lock size={16} />
+                  </button>
+                </form>
+              </div>
+            ) : (
+              /* CAPSULE LIST MODE */
+              <div className="capsule-list-view">
+                <h2 onClick={handleTitleTap} className="capsules-title">
+                  Time Capsules <Heart size={20} fill="var(--primary)" color="var(--primary)" />
+                </h2>
+                <p className="capsules-subtitle">Messages waiting for the perfect moment.</p>
+                
+                <div className="capsules-grid">
+                  {capsules.map(capsule => {
+                    const unlockTime = new Date(capsule.unlockDate).getTime();
+                    const isLocked = Date.now() < unlockTime;
+                    return (
+                      <div 
+                        key={capsule.id}
+                        className={`capsule-item ${isLocked ? 'locked' : 'unlocked'}`}
+                        onClick={() => openCapsule(capsule)}
+                      >
+                        <div className="capsule-icon">
+                          {isLocked ? <Lock size={24} color="#a0aec0" /> : <Unlock size={24} color="#ff6b6b" />}
+                        </div>
+                        <div className="capsule-info">
+                          <h4>{capsule.title}</h4>
+                          <p>{isLocked ? `Locked until ${new Date(capsule.unlockDate).toLocaleDateString()}` : 'Ready to read!'}</p>
+                        </div>
+                        {isAuthorMode && (
+                          <button className="capsule-delete" onClick={(e) => handleDelete(e, capsule.id)}>
+                            <X size={16} />
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-              )}
-            </motion.div>
-          </motion.div>,
-          document.body
-        )}
-      </AnimatePresence>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 }

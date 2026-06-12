@@ -17,6 +17,7 @@ export default function MoodTracker() {
   const [selectedToday, setSelectedToday] = useState({});
   const [showConfetti, setShowConfetti] = useState(false);
   const [userRole, setUserRole] = useState(localStorage.getItem('loveydovey-user-role'));
+  const [syncStatus, setSyncStatus] = useState('connecting'); // 'connecting', 'connected', 'offline', 'error'
 
   const getTodayStr = () => {
     const today = new Date();
@@ -35,29 +36,41 @@ export default function MoodTracker() {
             console.log('Realtime mood update:', payload);
             loadMoods(); // Reload on any change
           })
-          .subscribe();
+          .subscribe((status) => {
+            if (status === 'SUBSCRIBED') setSyncStatus('connected');
+            if (status === 'CLOSED' || status === 'CHANNEL_ERROR') setSyncStatus('error');
+          });
 
         return () => {
           supabase.removeChannel(channel);
         };
+      } else {
+        setSyncStatus('offline');
       }
     }
   }, [userRole]);
 
   const loadMoods = async () => {
-    const data = await getMoods();
-    const historyMap = {};
-    data.forEach(item => {
-      if (item.mood && item.mood.emoji) {
-        historyMap[item.date] = { legacy: item.mood };
-      } else {
-        historyMap[item.date] = item.mood || {};
+    try {
+      const data = await getMoods();
+      if (!data) throw new Error("Failed to load moods");
+      
+      const historyMap = {};
+      data.forEach(item => {
+        if (item.mood && item.mood.emoji) {
+          historyMap[item.date] = { legacy: item.mood };
+        } else {
+          historyMap[item.date] = item.mood || {};
+        }
+      });
+      setHistory(historyMap);
+      
+      if (historyMap[getTodayStr()]) {
+        setSelectedToday(historyMap[getTodayStr()]);
       }
-    });
-    setHistory(historyMap);
-    
-    if (historyMap[getTodayStr()]) {
-      setSelectedToday(historyMap[getTodayStr()]);
+    } catch (err) {
+      console.error("Load Moods Error:", err);
+      setSyncStatus('error');
     }
   };
 
@@ -70,7 +83,12 @@ export default function MoodTracker() {
     setSelectedToday(newSelectedToday);
     setHistory(prev => ({ ...prev, [todayStr]: newSelectedToday }));
     
-    await saveMood(todayStr, mood, userRole);
+    try {
+      await saveMood(todayStr, mood, userRole);
+    } catch (err) {
+      console.error("Save Mood Error:", err);
+      alert("Failed to sync mood to the database. Are the database tables set up?");
+    }
     
     if (mood.score >= 4) {
       setShowConfetti(true);
@@ -125,9 +143,22 @@ export default function MoodTracker() {
       exit={{ opacity: 0, y: -20 }}
     >
       <div className="mood-card glass-panel">
-        <div className="mood-header">
+        <div className="mood-header" style={{ position: 'relative' }}>
           <h2>Daily Mood Check-in 🌸</h2>
           <p>How are you feeling today?</p>
+          <div 
+            style={{ 
+              position: 'absolute', top: 0, right: 0, 
+              display: 'flex', alignItems: 'center', gap: '5px', 
+              fontSize: '0.7rem', color: 'var(--text-light)' 
+            }}
+          >
+            <span style={{ 
+              width: '8px', height: '8px', borderRadius: '50%', 
+              backgroundColor: syncStatus === 'connected' ? '#4ade80' : syncStatus === 'error' ? '#f87171' : syncStatus === 'offline' ? '#fbbf24' : '#9ca3af'
+            }}></span>
+            {syncStatus === 'connected' ? 'Synced' : syncStatus === 'error' ? 'Sync Error' : syncStatus === 'offline' ? 'Local Only' : 'Connecting...'}
+          </div>
         </div>
 
         <div className="mood-selector">

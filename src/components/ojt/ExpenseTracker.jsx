@@ -13,6 +13,12 @@ export default function ExpenseTracker() {
   const [goalAmount, setGoalAmount] = useState(0);
   const [totalSaved, setTotalSaved] = useState(0);
 
+  const [isSettingGoal, setIsSettingGoal] = useState(false);
+  const [tempGoalName, setTempGoalName] = useState('');
+  const [tempGoalAmount, setTempGoalAmount] = useState('');
+  const [isAddingSavings, setIsAddingSavings] = useState(false);
+  const [tempSavingsAmount, setTempSavingsAmount] = useState('');
+
   useEffect(() => {
     const savedAll = localStorage.getItem('ojtAllowance');
     const savedExp = localStorage.getItem('ojtExpenses');
@@ -155,18 +161,44 @@ export default function ExpenseTracker() {
         {goalAmount === 0 ? (
           <div className="savings-setup">
             <p>Set a goal to save for something special! 🎯</p>
-            <button 
-              className="task-add-btn savings-setup-btn"
-              onClick={() => {
-                const name = prompt("What are you saving for? (e.g. Date Night 🥰)");
-                if (!name) return;
-                const amt = prompt("How much do you need? (₱)");
-                if (!amt || isNaN(Number(amt))) return;
-                handleSaveGoal(name, Number(amt));
-              }}
-            >
-              <Plus size={16} /> Set Goal
-            </button>
+            {!isSettingGoal ? (
+              <button 
+                className="task-add-btn savings-setup-btn"
+                onClick={() => setIsSettingGoal(true)}
+              >
+                <Plus size={16} /> Set Goal
+              </button>
+            ) : (
+              <form 
+                className="goal-setup-form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!tempGoalName || !tempGoalAmount) return;
+                  handleSaveGoal(tempGoalName, Number(tempGoalAmount));
+                  setIsSettingGoal(false);
+                }}
+              >
+                <input 
+                  type="text" 
+                  placeholder="What for? (e.g. Date Night 🥰)" 
+                  value={tempGoalName}
+                  onChange={e => setTempGoalName(e.target.value)}
+                  className="expense-desc"
+                  required
+                />
+                <input 
+                  type="number" 
+                  placeholder="Target Amount (₱)" 
+                  value={tempGoalAmount}
+                  onChange={e => setTempGoalAmount(e.target.value)}
+                  className="expense-amt"
+                  required
+                />
+                <button type="submit" className="task-add-btn">
+                  Save
+                </button>
+              </form>
+            )}
           </div>
         ) : (
           <div className="savings-progress-card">
@@ -188,10 +220,38 @@ export default function ExpenseTracker() {
               />
             </div>
             <div className="savings-actions">
-              <button className="task-add-btn" onClick={handleAddSavings}>
-                <Plus size={14} /> Add Savings
-              </button>
-              {goalReached && (
+              {!isAddingSavings ? (
+                <button className="task-add-btn" onClick={() => setIsAddingSavings(true)}>
+                  <Plus size={14} /> Add Savings
+                </button>
+              ) : (
+                <form 
+                  className="goal-setup-form"
+                  style={{ width: '100%' }}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!tempSavingsAmount) return;
+                    const newTotal = totalSaved + Number(tempSavingsAmount);
+                    setTotalSaved(newTotal);
+                    localStorage.setItem('ojtTotalSaved', newTotal);
+                    setIsAddingSavings(false);
+                    setTempSavingsAmount('');
+                  }}
+                >
+                  <input 
+                    type="number" 
+                    placeholder="Amount saved (₱)" 
+                    value={tempSavingsAmount}
+                    onChange={e => setTempSavingsAmount(e.target.value)}
+                    className="expense-amt"
+                    required
+                  />
+                  <button type="submit" className="task-add-btn">
+                    Add
+                  </button>
+                </form>
+              )}
+              {goalReached && !isAddingSavings && (
                 <motion.span 
                   className="goal-reached-badge"
                   initial={{ scale: 0 }}
