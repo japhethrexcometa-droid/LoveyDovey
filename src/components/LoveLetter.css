@@ -18,6 +18,10 @@
   flex-shrink: 0;
 }
 
+.letter-btn:active {
+  transform: scale(0.95);
+}
+
 .letter-overlay {
   position: fixed;
   inset: 0;

@@ -91,15 +91,13 @@ export default function LoveLetter() {
 
   return (
     <>
-      <motion.button 
+      <button 
         className="letter-btn"
         onClick={() => setIsModalOpen(true)}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
       >
         <Mail size={20} color="var(--primary)" />
         <span>Open Me!</span>
-      </motion.button>
+      </button>
 
       <AnimatePresence>
         {isModalOpen && createPortal(
