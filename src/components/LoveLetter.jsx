@@ -92,7 +92,7 @@ export default function LoveLetter() {
   return (
     <>
       <motion.button 
-        className="letter-btn glass-panel"
+        className="letter-btn"
         onClick={() => setIsModalOpen(true)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
