@@ -85,7 +85,22 @@ export const getPhotos = async () => {
 
 export const deletePhoto = async (id) => {
   if (supabase) {
+    // 1. Fetch the photo to get its image URL so we know the filename
+    const { data: photoData } = await supabase.from('photos').select('data').eq('id', id).single();
+    
+    // 2. Delete from the photos table
     await supabase.from('photos').delete().eq('id', id);
+
+    // 3. Delete the actual image file from the storage bucket to free up space
+    if (photoData && photoData.data) {
+      const url = photoData.data;
+      if (url.includes('/memories/')) {
+        const fileName = url.split('/memories/').pop();
+        if (fileName) {
+          await supabase.storage.from('memories').remove([fileName]);
+        }
+      }
+    }
   }
 
   const db = await initDB();
