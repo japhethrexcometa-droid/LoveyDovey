@@ -91,7 +91,7 @@ export default function LoginScreen({ onLogin }) {
           </button>
         </div>
         
-        <div className="pin-hint">Hint: Our special date 💕 (03312025)</div>
+
       </motion.div>
     </div>
   );
