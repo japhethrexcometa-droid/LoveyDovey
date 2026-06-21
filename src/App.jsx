@@ -7,7 +7,7 @@ import FloatingHearts from './components/FloatingHearts';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
-    () => localStorage.getItem('loveydovey-auth') === 'true'
+    () => sessionStorage.getItem('loveydovey-auth') === 'true'
   );
   const [entered, setEntered] = useState(false);
 

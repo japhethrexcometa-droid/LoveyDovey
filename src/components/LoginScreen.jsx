@@ -32,7 +32,7 @@ export default function LoginScreen({ onLogin }) {
             }
           }
 
-          localStorage.setItem('loveydovey-auth', 'true');
+          sessionStorage.setItem('loveydovey-auth', 'true');
           setTimeout(() => onLogin(), 300);
         } else {
           setError(true);
