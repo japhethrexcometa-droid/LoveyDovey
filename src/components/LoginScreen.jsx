@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabaseClient';
 import './LoginScreen.css';
 
 // The SHA-256 hash of the correct PIN. This is safe to keep in public code.
-const CORRECT_PIN_HASH = '3afb87ff88ad8ba2bb0e5f350dabcd022f1411097b13d2d70aa83e92668ffd08';
+const CORRECT_PIN_HASH = 'f28b541ac665718cf54b713c79ec5d80e6ee2b827e6800fdc11364d86addce5a';
 
 export default function LoginScreen({ onLogin }) {
   const [pin, setPin] = useState('');
