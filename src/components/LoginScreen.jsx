@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Delete } from 'lucide-react';
+import { supabase } from '../lib/supabaseClient';
 import './LoginScreen.css';
 
-const CORRECT_PIN = '03312025'; // User's anniversary/special date
+// The SHA-256 hash of the correct PIN. This is safe to keep in public code.
+const CORRECT_PIN_HASH = '3afb87ff88ad8ba2bb0e5f350dabcd022f1411097b13d2d70aa83e92668ffd08';
 
 export default function LoginScreen({ onLogin }) {
   const [pin, setPin] = useState('');
@@ -11,16 +13,36 @@ export default function LoginScreen({ onLogin }) {
 
   useEffect(() => {
     if (pin.length === 8) {
-      if (pin === CORRECT_PIN) {
-        localStorage.setItem('loveydovey-auth', 'true');
-        setTimeout(() => onLogin(), 300);
-      } else {
-        setError(true);
-        setTimeout(() => {
-          setPin('');
-          setError(false);
-        }, 600);
-      }
+      const verifyPin = async () => {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(pin);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        
+        if (hashHex === CORRECT_PIN_HASH) {
+          // Attempt to log in to Supabase securely to get RLS access
+          if (supabase) {
+            const { error: authError } = await supabase.auth.signInWithPassword({
+              email: 'admin@loveydovey.com',
+              password: pin,
+            });
+            if (authError) {
+              console.error("Supabase secure login failed:", authError.message);
+            }
+          }
+
+          localStorage.setItem('loveydovey-auth', 'true');
+          setTimeout(() => onLogin(), 300);
+        } else {
+          setError(true);
+          setTimeout(() => {
+            setPin('');
+            setError(false);
+          }, 600);
+        }
+      };
+      verifyPin();
     }
   }, [pin, onLogin]);
 
